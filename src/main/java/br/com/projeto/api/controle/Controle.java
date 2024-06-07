@@ -4,6 +4,8 @@ package br.com.projeto.api.controle;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.projeto.api.modelo.Pessoa;
 import br.com.projeto.api.repositorio.Repositorio;
+import br.com.projeto.api.servico.Servico;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -24,16 +30,19 @@ public class Controle {
     @Autowired
     private Repositorio acao;
 
+    @Autowired
+    private Servico servico;
+
     @PostMapping("/api")    
-    public Pessoa cadastrar(@RequestBody Pessoa obj){
-        return acao.save(obj);
+    public ResponseEntity<?> cadastrar(@RequestBody Pessoa obj){
+        return servico.cadastrar(obj);
     }
 
     @DeleteMapping("/api/{codigo}")
     public void remover(@PathVariable int codigo){
-        Pessoa obj = selecionarPeloCodigo(codigo);
+        //Pessoa obj = selecionarPeloCodigo(codigo);
 
-        acao.delete(obj);
+        //acao.delete(obj);
     }
 
     @GetMapping("/api/contador")
@@ -58,9 +67,29 @@ public class Controle {
         return acao.findByNomeContaining("Lu");
     }
 
+    @GetMapping("/api/iniciaCom")        
+    public List<Pessoa> iniciaCom(){
+        return acao.findByNomeStartsWith("a");
+    }
+
+    @GetMapping("/api/terminaCom")
+    public List<Pessoa> terminaCom(){
+        return acao.findByNomeEndsWith("a");
+    }
+
+    @GetMapping("/api/somaIdades")
+    public int somaIdades(){
+        return acao.somaIdades();
+    }
+
+    @GetMapping("/api/idadeMaiorIgual")
+    public List<Pessoa> idadeMaiorIgual(){
+        return acao.idadeMaiorIgual(40);
+    }
+
     @GetMapping("/api/{codigo}")
-    public Pessoa selecionarPeloCodigo(@PathVariable int codigo){
-        return acao.findByCodigo(codigo);
+    public ResponseEntity<?> selecionarPeloCodigo(@PathVariable int codigo){
+        return servico.selecionarPeloCodigo(codigo);
     }
 
     @PutMapping("/api")
@@ -69,8 +98,8 @@ public class Controle {
     }
     
     @GetMapping("/api")
-    public List<Pessoa> selecionar(){
-        return acao.findAll();
+    public ResponseEntity<?> selecionar(){
+        return servico.selecionar();
     }
 
     @GetMapping("")
@@ -91,5 +120,10 @@ public class Controle {
     @PostMapping("/pessoa")    
     public Pessoa pessoa(@RequestBody Pessoa p){
         return p;
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<?> status(){
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
