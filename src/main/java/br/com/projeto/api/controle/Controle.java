@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import br.com.projeto.api.modelo.Cliente;
 import br.com.projeto.api.modelo.Pessoa;
 import br.com.projeto.api.repositorio.Repositorio;
 import br.com.projeto.api.servico.Servico;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -39,10 +40,8 @@ public class Controle {
     }
 
     @DeleteMapping("/api/{codigo}")
-    public void remover(@PathVariable int codigo){
-        //Pessoa obj = selecionarPeloCodigo(codigo);
-
-        //acao.delete(obj);
+    public ResponseEntity<?> remover(@PathVariable int codigo){
+        return servico.remover(codigo);
     }
 
     @GetMapping("/api/contador")
@@ -93,8 +92,8 @@ public class Controle {
     }
 
     @PutMapping("/api")
-    public Pessoa editar(@RequestBody Pessoa obj){
-        return acao.save(obj);
+    public ResponseEntity<?> editar(@RequestBody Pessoa obj){
+        return servico.editar(obj);
     }
     
     @GetMapping("/api")
@@ -125,5 +124,10 @@ public class Controle {
     @GetMapping("/status")
     public ResponseEntity<?> status(){
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/cliente")
+    public void cliente (@Valid @RequestBody Cliente obj){
+
     }
 }
